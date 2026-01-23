@@ -50,14 +50,14 @@ const Hero = () => {
       </div>
 
       <div className='border border-gray-300 shadow-md mx-2 mb-5 p-6 rounded-md flex'>
-        <div className='flex justify-between gap-10 lg:gap-12 flex-wrap'>
+        <div className='flex justify-around gap-10 lg:gap-12 flex-wrap'>
           <p className='font-medium'>Trusted by</p>
-          <img className='h-6' src={assets.microsoft_logo} alt="" />
-          <img className='h-6' src={assets.walmart_logo} alt="" />
-          <img className='h-6' src={assets.accenture_logo} alt="" />
-          <img className='h-6' src={assets.samsung_logo} alt="" />
-          <img className='h-6' src={assets.amazon_logo} alt="" />
-          <img className='h-6' src={assets.adobe_logo} alt="" />
+          <img className='h-6 max-sm:h-5' src={assets.microsoft_logo} alt="" />
+          <img className='h-6 max-sm:h-5' src={assets.walmart_logo} alt="" />
+          <img className='h-6 max-sm:h-5' src={assets.accenture_logo} alt="" />
+          <img className='h-6 max-sm:h-5' src={assets.samsung_logo} alt="" />
+          <img className='h-6 max-sm:h-5' src={assets.amazon_logo} alt="" />
+          <img className='h-6 max-sm:h-5' src={assets.adobe_logo} alt="" />
         </div>
       </div>
 
