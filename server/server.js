@@ -1,11 +1,22 @@
 import express from 'express'
-const app = express()
-const port = 3000
+import cors from 'cors'
+import 'dotenv/config'
 
+// Initilize the express
+const app = express()
+
+// Middlewares
+app.use(cors())
+app.use(express.json())
+
+// Routes
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Api working')
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+const PORT = process.env.PORT || 5000
+
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`)
 })
