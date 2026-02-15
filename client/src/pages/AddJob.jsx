@@ -5,7 +5,7 @@ import { JobCategories, JobLocations } from '../assets/assets'
 const AddJob = () => {
 
   const [title, setTitle] = useState('')
-  const [location, setLocation] = useState('Bangalore')
+  const [location, setLocation] = useState('Lahore')
   const [catagory, setCatagory] = useState('Programming')
   const [level, setLevel] = useState('Beginner level')
   const [salary, setSalary] = useState(0)
