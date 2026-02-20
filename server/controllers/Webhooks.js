@@ -5,11 +5,11 @@ import User from "../models/User.js";
 
 export const clerkWebhooks = async (req, res) => {
     try {
-        console.log("Webhook route hit")
+
         //Create a Svix instance with clerk webhook secret
         const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
 
-        //Verifying headers
+        //Verifying headers and giving body as payload
         await whook.verify(JSON.stringify(req.body), {
             "svix-id": req.headers["svix-id"],
             "svix-timestamp": req.headers["svix-timestamp"],
@@ -30,7 +30,9 @@ export const clerkWebhooks = async (req, res) => {
                     image: data.image_url,
                     resume: ''
                 }
+                console.log("Saving user to DB:", userData)
                 await User.create(userData)
+                console.log("User saved successfully!")
                 res.json({})
                 break;
             }
