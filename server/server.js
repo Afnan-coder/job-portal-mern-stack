@@ -8,6 +8,7 @@ import { clerkWebhooks } from './controllers/Webhooks.js'
 import companyRoutes from './routes/companyRoutes.js'
 import connectCloudinary from './config/cloudinary.js'
 import jobRoutes from './routes/jobRoutes.js'
+import userRoutes from './routes/userRoute.js'
 
 
 // Initilize the express
@@ -36,6 +37,7 @@ app.get("/debug-sentry", (req, res) => {
 app.post('/webhooks', clerkWebhooks)
 app.use('/api/company', companyRoutes)
 app.use('/api/jobs', jobRoutes)
+app.use('/api/users', userRoutes)
 
 
 const PORT = process.env.PORT || 5000
