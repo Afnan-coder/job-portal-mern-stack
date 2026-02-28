@@ -26,7 +26,7 @@ router.get('/applicants', protectCompany, getCompanyJobApplicants)
 
 
 // Get company job list
-router.get('/list-job', protectCompany, getCompanyPostedJobs)
+router.get('/list-jobs', protectCompany, getCompanyPostedJobs)
 
 
 // Change application status
