@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'
 
 const RecruterLogin = () => {
 
@@ -11,21 +14,47 @@ const RecruterLogin = () => {
   const [image, setImage] = useState(false)
   const [isTextDataSubmitted, setIsTextDataSubmitted] = useState(false)
 
-  const {setShowRecruterLogin} = useContext(AppContext)
+  const { setShowRecruterLogin, backendUrl, setCompanyToken, setCompanyData } = useContext(AppContext)
 
+  const navigate = useNavigate()
 
-  useEffect(()=>{
-     document.body.style.overflow = 'hidden'
-     return ()=>{
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => {
       document.body.style.overflow = 'unset'
-     }
-  },[])
+    }
+  }, [])
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
+    console.log("login clicked")
     if (state === 'Sign Up' && !isTextDataSubmitted) {
       setIsTextDataSubmitted(true)
     }
+
+    try {
+
+      if (state == "Login") {
+
+        const { data } = await axios.post(backendUrl + '/api/company/login', { email, password })
+
+        if (data.success) {
+          console.log(data)
+          setCompanyData(data.company)
+          setCompanyToken(data.token)
+          localStorage.setItem('companyToken', data.token)
+          setShowRecruterLogin(false)
+          navigate('/dashboard/manage-jobs')
+        } else {
+          toast.error(data.message)
+        }
+
+      }
+
+    } catch (error) {
+
+    }
+
   }
 
   return (
@@ -66,7 +95,7 @@ const RecruterLogin = () => {
 
           </>
         }
-       {state === 'Login' && <p className='text-sm text-blue-600 mt-4 cursor-pointer'>Forget password</p> }
+        {state === 'Login' && <p className='text-sm text-blue-600 mt-4 cursor-pointer'>Forget password</p>}
 
         <button type='submit' className='bg-blue-600 mt-4 w-full text-white py-2 rounded-full'>{state === 'Login' ? 'login' : isTextDataSubmitted ? 'Create Account' : 'next'}</button>
         {
@@ -75,7 +104,7 @@ const RecruterLogin = () => {
             : <p className='mt-5 text-center'>Already have an account? <span className='text-blue-600 cursor-pointer' onClick={e => setState("Login")}>Login</span></p>
         }
 
-        <img onClick={e=> setShowRecruterLogin(false)} className='absolute top-5 right-5 cursor-pointer' src={assets.cross_icon} alt="" />
+        <img onClick={e => setShowRecruterLogin(false)} className='absolute top-5 right-5 cursor-pointer' src={assets.cross_icon} alt="" />
 
       </form>
     </div>

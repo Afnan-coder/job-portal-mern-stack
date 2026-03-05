@@ -59,11 +59,11 @@ export const loginCompany = async (req, res) => {
 
         const company = await Company.findOne({ email })
 
-        if (bcrypt.compare(password, company.password)) {
+        if (await bcrypt.compare(password, company.password)) {
 
             res.json({
                 success: true,
-                comapny: {
+                company: {
                     _id: company._id,
                     name: company.name,
                     email: company.email,
