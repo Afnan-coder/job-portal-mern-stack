@@ -15,8 +15,10 @@ import { useAuth } from '@clerk/clerk-react'
 const ApplyJob = () => {
 
   const { id } = useParams()
-  const { jobs, backendUrl, userData, userApplications } = useContext(AppContext)
+  const { jobs, backendUrl, userData, userApplications, fetchUserApplications } = useContext(AppContext)
   const [JobData, setJobData] = useState(null)
+
+  const [isAlreadyApplied, setIsAlreadyApplied] = useState(false)
 
   const { getToken } = useAuth()
 
@@ -54,14 +56,15 @@ const ApplyJob = () => {
 
       const token = await getToken()
 
-     const {data} = await axios.post(backendUrl+'/api/users/apply',
-      {jobId: JobData._id},
-      {headers: {Authorization: `Bearer ${token}`}}
-     )
+      const { data } = await axios.post(backendUrl + '/api/users/apply',
+        { jobId: JobData._id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
 
       if (data.success) {
         toast.success(data.message)
-        
+        fetchUserApplications()
+
       } else {
         toast.error(data.message)
       }
@@ -72,9 +75,25 @@ const ApplyJob = () => {
     }
   }
 
+  // Function to check already applied
+  const checkAlreadyApplied = () => {
+    const hasApplied = userApplications.some(item => item.jobId._id === JobData._id)
+
+    setIsAlreadyApplied(hasApplied)
+
+  }
+
   useEffect(() => {
     fetchJobs()
   }, [id])
+
+  useEffect(() => {
+
+    if (userApplications.length > 0 && JobData) {
+      checkAlreadyApplied()
+    }
+
+  }, [JobData, userApplications, id])
 
   return JobData ? (
     <>
@@ -109,7 +128,7 @@ const ApplyJob = () => {
             </div>
 
             <div className='flex flex-col justify-center text-end text-sm max-md:mx-auto max-sm:text-center'>
-              <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded'>Apply now</button>
+              <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded'>{isAlreadyApplied ? 'Already applied' : 'Apply now'}</button>
               <p className='mt-1 text-gray-600'>Posted {moment(JobData.date).fromNow()}</p>
             </div>
 
@@ -119,7 +138,7 @@ const ApplyJob = () => {
             <div className='w-full lg:w-2/3'>
               <h2 className='font-bold text-2xl mb-4'>Job Description</h2>
               <div className='rich-text' dangerouslySetInnerHTML={{ __html: JobData.description }}></div>
-              <button onClick={applyHandler} className='bg-blue-600 mt-10 p-2.5 px-10 text-white rounded'>Apply now</button>
+              <button onClick={applyHandler} className='bg-blue-600 mt-10 p-2.5 px-10 text-white rounded'>{isAlreadyApplied ? 'Already applied' : 'Apply now'}</button>
             </div>
             {/* Right section more jobs */}
 
