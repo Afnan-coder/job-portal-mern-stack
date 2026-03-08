@@ -1,13 +1,16 @@
 import { createContext, useEffect, useState } from "react";
-import { jobsData } from "../assets/assets";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAuth, useUser } from '@clerk/clerk-react'
 
 export const AppContext = createContext()
 
 export const AppContextProvider = (props) => {
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL
+
+    const { user } = useUser()
+    const { getToken } = useAuth()
 
     const [searchFilter, SetSearchFilter] = useState({
         title: '',
@@ -22,7 +25,11 @@ export const AppContextProvider = (props) => {
     const [companyToken, setCompanyToken] = useState(null)
     const [companyData, setCompanyData] = useState(null)
 
-    // function to fetch the jobs data from assets
+    const [userData, setUserData] = useState(null)
+    const [userApplications, setUserApplications] = useState([])
+
+
+    // function to fetch the jobs data from database
 
     const fetchJobs = async () => {
 
@@ -61,6 +68,27 @@ export const AppContextProvider = (props) => {
         }
     }
 
+    // Function to fetch user data
+    const fetchUserData = async () => {
+        try {
+
+            const token = await getToken()
+
+            const { data } = await axios.get(backendUrl + '/api/users/user',
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+
+            if (data.success) {
+                setUserData(data.user)
+            } else {
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
     useEffect(() => {
         fetchJobs()
 
@@ -80,6 +108,12 @@ export const AppContextProvider = (props) => {
 
     }, [companyToken])
 
+    useEffect(()=>{
+        if(user){
+            fetchUserData()
+        }
+    },[user])
+
     const value = {
 
         searchFilter, SetSearchFilter,
@@ -88,7 +122,10 @@ export const AppContextProvider = (props) => {
         showRecruterLogin, setShowRecruterLogin,
         companyToken, setCompanyToken,
         companyData, setCompanyData,
-        backendUrl
+        backendUrl,
+        userData,setUserData,
+        userApplications,setUserApplications,
+        fetchUserData
     }
 
     return (<AppContext.Provider value={value}>
