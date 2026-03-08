@@ -140,13 +140,19 @@ const ApplyJob = () => {
               <div className='rich-text' dangerouslySetInnerHTML={{ __html: JobData.description }}></div>
               <button onClick={applyHandler} className='bg-blue-600 mt-10 p-2.5 px-10 text-white rounded'>{isAlreadyApplied ? 'Already applied' : 'Apply now'}</button>
             </div>
+
             {/* Right section more jobs */}
 
             <div className='w-full lg:w-1/3 mt-8 lg:mt-0 lg:ml-8 space-y-5'>
               <h2>More jobs from {JobData.companyId.name}</h2>
               {
                 jobs.filter(job => job._id !== JobData.id && job.companyId._id === JobData.companyId._id)
-                  .filter(job => true).slice(0, 4)
+                  .filter(job => {
+                    // Set of applied jobIds
+                    const appliedJobsIds = new Set(userApplications.map(app=> app.jobId && app.jobId._id))
+                    // Return true if the user has not already applied for this job
+                    return !appliedJobsIds.has(job._id)
+                  }).slice(0, 4)
                   .map((job, index) => <JobCard key={index} job={job} />)
               }
             </div>
