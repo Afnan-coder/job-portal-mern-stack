@@ -36,7 +36,7 @@ app.get("/debug-sentry", (req, res) => {
 });
 
 
-app.post('/webhooks', clerkWebhooks)
+app.post('/webhooks', clerkWebhooks) 
 app.use('/api/company', companyRoutes)
 app.use('/api/jobs', jobRoutes)
 app.use('/api/users', userRoutes)
